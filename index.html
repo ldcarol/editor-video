@@ -8,182 +8,33 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-900 text-white min-h-screen p-4 flex flex-col items-center">
+<body class="bg-gray-100 text-gray-900 min-h-screen p-4 flex flex-col items-center justify-center">
 
-    <div class="w-full max-w-md bg-gray-800 rounded-2xl p-4 shadow-xl mb-6">
-        <h1 class="text-xl font-bold mb-4 text-center text-pink-400">Editor de Vídeos</h1>
+    <div class="w-full max-w-md bg-white rounded-2xl p-4 shadow-xl mb-6 border border-gray-200">
+        <h1 class="text-xl font-bold mb-4 text-center text-gray-800">Editor de Vídeos</h1>
         
         <!-- Configurações de Perfil -->
         <div class="space-y-3 mb-4">
             <div>
-                <label class="text-xs text-gray-400">Nome da Página:</label>
-                <input type="text" id="inputName" value="Minha Página" class="w-full bg-gray-700 p-2 rounded text-sm border border-gray-600 focus:outline-none focus:border-pink-500">
+                <label class="text-xs text-gray-500 font-semibold">Nome da Página:</label>
+                <input type="text" id="inputName" value="Mikassak" class="w-full bg-gray-50 p-2 rounded text-sm border border-gray-300 focus:outline-none focus:border-blue-500">
             </div>
             <div>
-                <label class="text-xs text-gray-400">Nome de Utilizador (@):</label>
-                <input type="text" id="inputUser" value="@minhapagina" class="w-full bg-gray-700 p-2 rounded text-sm border border-gray-600 focus:outline-none focus:border-pink-500">
+                <label class="text-xs text-gray-500 font-semibold">Nome de Utilizador (@):</label>
+                <input type="text" id="inputUser" value="@mikassak" class="w-full bg-gray-50 p-2 rounded text-sm border border-gray-300 focus:outline-none focus:border-blue-500">
             </div>
             <div>
-                <label class="text-xs text-gray-400">Foto de Perfil:</label>
-                <input type="file" id="inputPhoto" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-pink-600 file:text-white hover:file:bg-pink-700">
+                <label class="text-xs text-gray-500 font-semibold">Foto de Perfil:</label>
+                <input type="file" id="inputPhoto" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
             </div>
 
             <!-- Seleção Direta de Vídeo da Galeria -->
-            <div class="pt-2 border-t border-gray-700">
-                <label class="text-xs text-gray-400 font-semibold text-pink-400">Carregar Vídeo da Galeria:</label>
-                <input type="file" id="inputVideo" accept="video/*" class="w-full mt-1 text-xs text-gray-400 file:mr-4 file:py-3 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
+            <div class="pt-2 border-t border-gray-200">
+                <label class="text-xs font-semibold text-purple-600">Carregar Vídeo da Galeria:</label>
+                <input type="file" id="inputVideo" accept="video/*" class="w-full mt-1 text-xs text-gray-500 file:mr-4 file:py-3 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
             </div>
         </div>
     </div>
 
-    <!-- Pré-visualização do Vídeo com Cabeçalho Integrado -->
-    <div class="relative w-full max-w-md bg-black rounded-xl overflow-hidden shadow-2xl aspect-[9/16] flex flex-col items-center justify-center">
-        <video id="meuVideo" class="w-full h-full object-cover hidden" playsinline loop></video>
-        <canvas id="canvasPreview" class="w-full h-full object-cover"></canvas>
-        
-        <!-- Cabeçalho Fixo visível na tela -->
-        <div id="cabecalho" class="absolute top-0 left-0 w-full bg-gradient-to-b from-black/80 via-black/40 to-transparent p-3 flex items-center justify-between pointer-events-none">
-            <div class="flex items-center space-x-2">
-                <img id="profilePreview" src="https://via.placeholder.com/150" class="w-10 h-10 rounded-full border-2 border-white object-cover">
-                <div>
-                    <div class="flex items-center space-x-1">
-                        <span id="displayName" class="font-bold text-sm text-white drop-shadow">Minha Página</span>
-                        <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
-                    </div>
-                    <span id="displayUser" class="text-xs text-gray-300 drop-shadow">@minhapagina</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Botão de Baixar o Vídeo Editado -->
-    <div class="w-full max-w-md mt-4">
-        <button id="btnDownload" onclick="baixarVideoEditado()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2">
-            <i class="fa-solid fa-download"></i> Baixar Vídeo Editado
-        </button>
-        <p id="statusDownload" class="text-xs text-center text-gray-400 mt-2"></p>
-    </div>
-
-    <script>
-        const inputVideo = document.getElementById('inputVideo');
-        const meuVideo = document.getElementById('meuVideo');
-        const canvas = document.getElementById('canvasPreview');
-        const ctx = canvas.getContext('2d');
-        const inputName = document.getElementById('inputName');
-        const inputUser = document.getElementById('inputUser');
-        const inputPhoto = document.getElementById('inputPhoto');
-        const displayName = document.getElementById('displayName');
-        const displayUser = document.getElementById('displayUser');
-        const profilePreview = document.getElementById('profilePreview');
-        const statusDownload = document.getElementById('statusDownload');
-
-        let userImage = new Image();
-        userImage.crossOrigin = "anonymous";
-        userImage.src = 'https://via.placeholder.com/150';
-
-        inputName.addEventListener('input', (e) => { displayName.innerText = e.target.value || 'Minha Página'; });
-        inputUser.addEventListener('input', (e) => { displayUser.innerText = e.target.value || '@minhapagina'; });
-
-        inputPhoto.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                profilePreview.src = url;
-                userImage.src = url;
-            }
-        });
-
-        inputVideo.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                meuVideo.src = URL.createObjectURL(file);
-                meuVideo.play();
-                meuVideo.onloadedmetadata = () => {
-                    canvas.width = meuVideo.videoWidth || 720;
-                    canvas.height = meuVideo.videoHeight || 1280;
-                    renderFrame();
-                };
-            }
-        });
-
-        function renderFrame() {
-            if (!meuVideo.paused && !meuVideo.ended) {
-                ctx.drawImage(meuVideo, 0, 0, canvas.width, canvas.height);
-                
-                // Desenhar o degradê do topo no canvas
-                let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.15);
-                gradient.addColorStop(0, 'rgba(0, 0, 0, 0.8)');
-                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, canvas.width, canvas.height * 0.15);
-
-                // Desenhar a Foto de Perfil Redonda
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(50, 50, 30, 0, Math.PI * 2, true);
-                ctx.closePath();
-                ctx.clip();
-                ctx.drawImage(userImage, 20, 20, 60, 60);
-                ctx.restore();
-
-                // Borda branca na foto
-                ctx.strokeStyle = '#FFFFFF';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(50, 50, 30, 0, Math.PI * 2, true);
-                ctx.stroke();
-
-                // Desenhar Nome e @
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 22px sans-serif';
-                ctx.fillText(inputName.value || 'Minha Página', 95, 45);
-
-                ctx.fillStyle = '#D1D5DB';
-                ctx.font = '16px sans-serif';
-                ctx.fillText(inputUser.value || '@minhapagina', 95, 68);
-
-                requestAnimationFrame(renderFrame);
-            }
-        }
-
-        function baixarVideoEditado() {
-            if (!meuVideo.src) {
-                alert('Por favor, carregue um vídeo da galeria primeiro!');
-                return;
-            }
-
-            statusDownload.innerText = "A preparar o ficheiro para download...";
-            
-            const stream = canvas.captureStream(30);
-            const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-            const chunks = [];
-
-            recorder.ondataavailable = e => chunks.push(e.data);
-            recorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'video-editado.webm';
-                a.click();
-                statusDownload.innerText = "Download concluído!";
-            };
-
-            meuVideo.currentTime = 0;
-            meuVideo.play();
-            recorder.start();
-
-            meuVideo.onended = () => {
-                recorder.stop();
-            };
-
-            // Se for vídeo em loop, para e grava após 1 volta completa
-            setTimeout(() => {
-                if (recorder.state === "recording") {
-                    recorder.stop();
-                }
-            }, (meuVideo.duration || 10) * 1000);
-        }
-    </script>
-</body>
-</html>
+    <!-- Pré-visualização com Layout Exato da Sua Foto -->
+    <div id="previewCard" class="w-full max-w-md bg-white rounded-2xl p-
