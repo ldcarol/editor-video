@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor de Vídeo - Personalizado</title>
+    <title>Editor de Vídeos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -92,9 +93,11 @@
         });
 
         function baixarInsta() {
-            const url = document.getElementById('instaUrl').value;
+            const urlInput = document.getElementById('instaUrl');
+            const url = urlInput.value.trim();
             if (url) {
-                window.open('https://snapinsta.app/', '_blank');
+                navigator.clipboard.writeText(url).catch(() => {});
+                window.open('https://snapinsta.com.br/', '_blank');
             } else {
                 alert('Por favor, cole o link do Instagram no campo primeiro!');
             }
