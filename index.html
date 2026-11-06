@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -28,18 +27,19 @@
                 <input type="file" id="inputPhoto" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-pink-600 file:text-white hover:file:bg-pink-700">
             </div>
 
-            <!-- Campo de Link do Instagram -->
+            <!-- Campo de Link do Instagram com Puxada Direta -->
             <div class="pt-2 border-t border-gray-700">
-                <label class="text-xs text-gray-400">Cole o Link do Vídeo do Instagram:</label>
+                <label class="text-xs text-gray-400">Link do Reel do Instagram:</label>
                 <div class="flex gap-2 mt-1">
                     <input type="url" id="instaUrl" placeholder="https://www.instagram.com/reel/..." class="flex-1 bg-gray-700 p-2 rounded text-sm border border-gray-600 focus:outline-none focus:border-pink-500">
-                    <button type="button" onclick="baixarInsta()" class="bg-pink-600 hover:bg-pink-700 px-3 py-2 rounded text-xs font-semibold whitespace-nowrap">Baixar Vídeo</button>
+                    <button type="button" id="btnCarregar" onclick="carregarInsta()" class="bg-pink-600 hover:bg-pink-700 px-3 py-2 rounded text-xs font-semibold whitespace-nowrap">Carregar Vídeo</button>
                 </div>
+                <p id="statusMsg" class="text-[10px] text-gray-400 mt-1">Cole o link e clique em carregar.</p>
             </div>
 
-            <!-- Seleção de Arquivo da Galeria -->
+            <!-- Seleção de Arquivo da Galeria (Alternativa) -->
             <div>
-                <label class="text-xs text-gray-400">Carregar Vídeo da Galeria:</label>
+                <label class="text-xs text-gray-400">Ou Carregar do Telemóvel:</label>
                 <input type="file" id="inputVideo" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
             </div>
         </div>
@@ -73,6 +73,8 @@
         const displayName = document.getElementById('displayName');
         const displayUser = document.getElementById('displayUser');
         const profilePreview = document.getElementById('profilePreview');
+        const statusMsg = document.getElementById('statusMsg');
+        const btnCarregar = document.getElementById('btnCarregar');
 
         inputVideo.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -92,14 +94,44 @@
             }
         });
 
-        function baixarInsta() {
-            const urlInput = document.getElementById('instaUrl');
-            const url = urlInput.value.trim();
-            if (url) {
-                navigator.clipboard.writeText(url).catch(() => {});
+        async function carregarInsta() {
+            const url = document.getElementById('instaUrl').value.trim();
+            if (!url) {
+                alert('Por favor, cole o link do Instagram primeiro!');
+                return;
+            }
+
+            statusMsg.innerText = "A procurar o vídeo...";
+            btnCarregar.disabled = true;
+
+            try {
+                // Utilizando uma API pública de captura de media do Instagram
+                const apiRes = await fetch(`https://api.cobalt.tools/api/json`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await apiRes.json();
+                
+                if (data && (data.url || (data.picker && data.picker.length > 0))) {
+                    const videoLink = data.url || data.picker[0].url;
+                    meuVideo.src = videoLink;
+                    meuVideo.crossOrigin = "anonymous";
+                    meuVideo.play();
+                    statusMsg.innerText = "Vídeo carregado com sucesso!";
+                } else {
+                    throw new Error("Não foi possível extrair o vídeo.");
+                }
+            } catch (error) {
+                // Plano alternativo caso a API direta bloqueie por restrições do Instagram
+                statusMsg.innerText = "A redirecionar para processamento seguro...";
                 window.open('https://save-free.com/pt-pt/video-downloader/', '_blank');
-            } else {
-                alert('Por favor, cole o link do Instagram no campo primeiro!');
+            } finally {
+                btnCarregar.disabled = false;
             }
         }
     </script>
