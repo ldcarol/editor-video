@@ -1,117 +1,85 @@
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor de Vídeo & Cabeçalho</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    .video-container { position: relative; width: 100%; max-width: 360px; aspect-ratio: 9/16; background: #000; border-radius: 16px; overflow: hidden; }
-    .header-overlay { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 10; pointer-events: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Vídeo - Personalizado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen text-gray-800 p-4">
-  <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-    
-    <!-- PAINEL DE CONFIGURAÇÕES -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm space-y-4">
-      <h2 class="text-xl font-bold border-b pb-3">Personalizar Cabeçalho</h2>
-      
-      <div>
-        <label class="block text-sm font-medium mb-1">Foto do perfil</label>
-        <input type="file" id="inputFoto" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white hover:file:bg-gray-800">
-      </div>
+<body class="bg-gray-900 text-white min-h-screen p-4 flex flex-col items-center">
 
-      <div>
-        <label class="block text-sm font-medium mb-1">Nome da página</label>
-        <input type="text" id="inputNome" value="Mikassak" class="w-full p-2.5 bg-blue-50/50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-black">
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-1">@ do Instagram</label>
-        <input type="text" id="inputArroba" value="@mikassak" class="w-full p-2.5 bg-blue-50/50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-black">
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-1">Frase em cima do vídeo</label>
-        <input type="text" id="inputFrase" value="🫢" class="w-full p-2.5 bg-blue-50/50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-black">
-      </div>
-
-      <div class="flex items-center justify-between py-2">
-        <span class="text-sm font-medium">Selo de verificado</span>
-        <input type="checkbox" id="checkSelo" checked class="w-5 h-5 accent-black">
-      </div>
-
-      <div class="border-t pt-4">
-        <label class="block text-sm font-medium mb-1">Selecione o Vídeo (MP4/WebM)</label>
-        <input type="file" id="inputVideo" accept="video/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
-      </div>
-    </div>
-
-    <!-- PRÉVIA E RESULTADO -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm flex flex-col items-center justify-center">
-      <h2 class="text-xl font-bold mb-4 w-full text-left">Prévia em Tempo Real</h2>
-      
-      <div class="video-container shadow-2xl flex items-center justify-center">
-        <!-- OVERLAY DO CABEÇALHO -->
-        <div class="header-overlay bg-white/90 backdrop-blur-md rounded-2xl p-3 shadow-lg flex flex-col items-center">
-          <div class="flex items-center gap-3 w-full">
-            <img id="imgPerfil" src="https://via.placeholder.com/150" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1">
-                <span id="txtNome" class="font-bold text-gray-900 truncate">Mikassak</span>
-                <i id="badgeSelo" class="fa-solid fa-circle-check text-blue-500 text-sm"></i>
-              </div>
-              <p id="txtArroba" class="text-xs text-gray-500 truncate">@mikassak</p>
+    <div class="w-full max-w-md bg-gray-800 rounded-2xl p-4 shadow-xl mb-6">
+        <h1 class="text-xl font-bold mb-4 text-center text-pink-400">Editor de Vídeos</h1>
+        
+        <!-- Configurações de Perfil -->
+        <div class="space-y-3 mb-4">
+            <div>
+                <label class="text-xs text-gray-400">Nome da Página:</label>
+                <input type="text" id="inputName" value="Mikassak" class="w-full bg-gray-700 p-2 rounded text-sm border border-gray-600 focus:outline-none focus:border-pink-500">
             </div>
-          </div>
-          <div id="txtFrase" class="mt-2 text-center text-sm font-medium text-gray-800">🫢</div>
+            <div>
+                <label class="text-xs text-gray-400">Nome de Utilizador (@):</label>
+                <input type="text" id="inputUser" value="@mikassak" class="w-full bg-gray-700 p-2 rounded text-sm border border-gray-600 focus:outline-none focus:border-pink-500">
+            </div>
+            <div>
+                <label class="text-xs text-gray-400">Foto de Perfil:</label>
+                <input type="file" id="inputPhoto" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-pink-600 file:text-white hover:file:bg-pink-700">
+            </div>
+            <div>
+                <label class="text-xs text-gray-400">Selecionar Vídeo do Telemóvel:</label>
+                <input type="file" id="inputVideo" accept="video/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
+            </div>
         </div>
-
-        <!-- REPRODUTOR DE VÍDEO -->
-        <video id="meuVideo" class="w-full h-full object-cover" controls loop autoplay muted>
-          <source src="" type="video/mp4">
-          O seu navegador não suporta vídeos.
-        </video>
-      </div>
     </div>
 
-  </div>
+    <!-- Pré-visualização do Vídeo com Cabeçalho -->
+    <div class="relative w-full max-w-md bg-black rounded-xl overflow-hidden shadow-2xl aspect-[9/16] flex items-center justify-center">
+        <video id="meuVideo" class="w-full h-full object-cover" controls playsinline></video>
+        
+        <!-- Cabeçalho Personalizado sobre o Vídeo -->
+        <div id="cabecalho" class="absolute top-0 left-0 w-full bg-gradient-to-b from-black/80 via-black/40 to-transparent p-3 flex items-center justify-between pointer-events-none">
+            <div class="flex items-center space-x-2">
+                <img id="profilePreview" src="https://via.placeholder.com/150" class="w-10 h-10 rounded-full border-2 border-white object-cover">
+                <div>
+                    <div class="flex items-center space-x-1">
+                        <span id="displayName" class="font-bold text-sm text-white drop-shadow">Mikassak</span>
+                        <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
+                    </div>
+                    <span id="displayUser" class="text-xs text-gray-300 drop-shadow">@mikassak</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <script>
-    const inputNome = document.getElementById('inputNome');
-    const inputArroba = document.getElementById('inputArroba');
-    const inputFrase = document.getElementById('inputFrase');
-    const checkSelo = document.getElementById('checkSelo');
-    const inputFoto = document.getElementById('inputFoto');
-    const inputVideo = document.getElementById('inputVideo');
+    <script>
+        const inputVideo = document.getElementById('inputVideo');
+        const meuVideo = document.getElementById('meuVideo');
+        const inputName = document.getElementById('inputName');
+        const inputUser = document.getElementById('inputUser');
+        const inputPhoto = document.getElementById('inputPhoto');
+        const displayName = document.getElementById('displayName');
+        const displayUser = document.getElementById('displayUser');
+        const profilePreview = document.getElementById('profilePreview');
 
-    const txtNome = document.getElementById('txtNome');
-    const txtArroba = document.getElementById('txtArroba');
-    const txtFrase = document.getElementById('txtFrase');
-    const badgeSelo = document.getElementById('badgeSelo');
-    const imgPerfil = document.getElementById('imgPerfil');
-    const meuVideo = document.getElementById('meuVideo');
+        inputVideo.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                meuVideo.src = URL.createObjectURL(file);
+                meuVideo.play();
+            }
+        });
 
-    inputNome.addEventListener('input', (e) => txtNome.textContent = e.target.value);
-    inputArroba.addEventListener('input', (e) => txtArroba.textContent = e.target.value);
-    inputFrase.addEventListener('input', (e) => txtFrase.textContent = e.target.value);
-    checkSelo.addEventListener('change', (e) => badgeSelo.style.display = e.target.checked ? 'inline-block' : 'none');
+        inputName.addEventListener('input', (e) => { displayName.innerText = e.target.value || 'Nome'; });
+        inputUser.addEventListener('input', (e) => { displayUser.innerText = e.target.value || '@usuario'; });
 
-    inputFoto.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) imgPerfil.src = URL.createObjectURL(file);
-    });
-
-    inputVideo.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        meuVideo.src = URL.createObjectURL(file);
-        meuVideo.play();
-      }
-    });
-  </script>
+        inputPhoto.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                profilePreview.src = URL.createObjectURL(file);
+            }
+        });
+    </script>
 </body>
 </html>
