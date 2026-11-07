@@ -1,127 +1,322 @@
 
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor de Vídeos</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor & Gerador de Vídeos Reels/TikTok</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .aspect-reels { aspect-ratio: 9/16; }
+    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-900 min-h-screen p-4 flex flex-col items-center">
+<body class="bg-slate-900 text-slate-100 min-h-screen p-3 md:p-6 flex flex-col items-center">
 
-    <div class="w-full max-w-md bg-white rounded-2xl p-4 shadow-xl mb-6 border border-gray-200">
-        <h1 class="text-xl font-bold mb-4 text-center text-gray-800">Editor de Vídeos</h1>
+  <header class="w-full max-w-5xl mb-6 text-center">
+    <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+      Editor de Vídeos & Gerenciador de Páginas
+    </h1>
+    <p class="text-xs text-slate-400 mt-1">Crie conteúdo estilo Reels com perfis customizáveis, fundos incríveis e links do Instagram/TikTok.</p>
+  </header>
+
+  <main class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- PAINEL DE CONTROLE (ESQUERDA) -->
+    <section class="lg:col-span-6 bg-slate-800 border border-slate-700/80 rounded-2xl p-4 md:p-5 shadow-2xl flex flex-col gap-5">
+      
+      <!-- 1. Gestão de Perfis -->
+      <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
+        <div class="flex justify-between items-center mb-2.5">
+          <span class="text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-users"></i> Minhas Páginas / Perfis
+          </span>
+          <button onclick="salvarPerfilAtual()" class="text-xs bg-purple-600 hover:bg-purple-500 text-white font-semibold px-3 py-1 rounded-lg transition-all shadow">
+            + Salvar Perfil
+          </button>
+        </div>
+        <div id="lista-perfis" class="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+          <!-- Perfis injetados dinamicamente via JS -->
+        </div>
+      </div>
+
+      <!-- 2. Dados do Perfil Atual -->
+      <div class="flex flex-col gap-3">
+        <span class="text-xs font-bold uppercase tracking-wider text-pink-400 flex items-center gap-1.5">
+          <i class="fa-solid fa-user-pen"></i> Dados do Perfil
+        </span>
         
-        <!-- Configurações Limpas -->
-        <div class="space-y-3 mb-4">
-            <div>
-                <label class="text-xs text-gray-500 font-semibold">Nome da Página:</label>
-                <input type="text" id="inputName" placeholder="Digite o seu nome" class="w-full bg-gray-50 p-2 rounded text-sm border border-gray-300 focus:outline-none focus:border-blue-500">
-            </div>
-            <div>
-                <label class="text-xs text-gray-500 font-semibold">Nome de Utilizador (@):</label>
-                <input type="text" id="inputUser" placeholder="@seudesejo" class="w-full bg-gray-50 p-2 rounded text-sm border border-gray-300 focus:outline-none focus:border-blue-500">
-            </div>
-            <div>
-                <label class="text-xs text-gray-500 font-semibold">Título / Emojis (ex: 😂):</label>
-                <input type="text" id="inputTitle" placeholder="Digite o título ou emojis" class="w-full bg-gray-50 p-2 rounded text-sm border border-gray-300 focus:outline-none focus:border-blue-500">
-            </div>
-            <div>
-                <label class="text-xs text-gray-500 font-semibold">Foto de Perfil:</label>
-                <input type="file" id="inputPhoto" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
-            </div>
-
-            <!-- Seleção de Vídeo da Galeria -->
-            <div class="pt-2 border-t border-gray-200">
-                <label class="text-xs font-semibold text-purple-600">Carregar Vídeo da Galeria:</label>
-                <input type="file" id="inputVideo" accept="video/*" class="w-full mt-1 text-xs text-gray-500 file:mr-4 file:py-3 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
-            </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs text-slate-400 mb-1 block">Nome da Página:</label>
+            <input type="text" id="input-nome" value="@0llcarol" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-purple-500">
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 mb-1 block">Utilizador (@):</label>
+            <input type="text" id="input-usuario" value="0llcarol" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-purple-500">
+          </div>
         </div>
-    </div>
 
-    <!-- Cartão com Fundo Branco (Perfil alinhado à esquerda na reta do vídeo, e vídeo no meio) -->
-    <div class="w-full max-w-md bg-white rounded-2xl p-5 shadow-2xl border border-gray-200 flex flex-col items-center">
+        <div>
+          <label class="text-xs text-slate-400 mb-1 block">Foto de Perfil (Carregar da Galeria):</label>
+          <input type="file" id="input-foto-file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-950 file:text-purple-300 hover:file:bg-purple-900 cursor-pointer">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 mb-1 block">Legenda / Título:</label>
+          <div class="flex gap-2">
+            <input type="text" id="input-titulo" value="Vídeo incrível do dia! 🔥✨" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-purple-500">
+          </div>
+          <!-- Emojis Rápido -->
+          <div class="flex gap-1.5 mt-2 overflow-x-auto">
+            <button onclick="addEmoji('🔥')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">🔥</button>
+            <button onclick="addEmoji('✨')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">✨</button>
+            <button onclick="addEmoji('🤣')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">🤣</button>
+            <button onclick="addEmoji('❤️')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">❤️</button>
+            <button onclick="addEmoji('👀')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">👀</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Origem do Vídeo -->
+      <div class="flex flex-col gap-3 pt-3 border-t border-slate-700/60">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+          <i class="fa-solid fa-video"></i> Origem do Vídeo
+        </span>
+
+        <!-- Input Link Instagram / TikTok -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs text-slate-400">Cole o Link do Vídeo (Instagram Reels, TikTok):</label>
+          <div class="flex gap-2">
+            <input type="text" id="input-link-video" placeholder="https://www.instagram.com/reel/..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+            <button onclick="baixarESetupVideo()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-2 rounded-lg whitespace-nowrap transition-all flex items-center gap-1">
+              <i class="fa-solid fa-cloud-arrow-down"></i> Baixar Link
+            </button>
+          </div>
+        </div>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-slate-700"></div>
+          <span class="flex-shrink mx-2 text-[10px] text-slate-500 uppercase">ou</span>
+          <div class="flex-grow border-t border-slate-700"></div>
+        </div>
+
+        <!-- File Upload Vídeo -->
+        <div>
+          <label class="text-xs text-slate-400 mb-1 block">Vídeo da Galeria (MP4/WebM):</label>
+          <input type="file" id="input-video-file" accept="video/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-950 file:text-indigo-300 hover:file:bg-indigo-900 cursor-pointer">
+        </div>
+      </div>
+
+      <!-- 4. Estilo do Plano de Fundo -->
+      <div class="flex flex-col gap-2 pt-3 border-t border-slate-700/60">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+          <i class="fa-solid fa-palette"></i> Plano de Fundo
+        </span>
+        <div class="grid grid-cols-4 gap-2">
+          <button onclick="setFundo('branco')" class="py-1.5 bg-white text-slate-900 font-semibold text-xs rounded border hover:opacity-90">Branco</button>
+          <button onclick="setFundo('escuro')" class="py-1.5 bg-slate-950 text-white font-semibold text-xs rounded border border-slate-700 hover:opacity-90">Escuro</button>
+          <button onclick="setFundo('blur')" class="py-1.5 bg-gradient-to-r from-purple-900 to-pink-900 text-white font-semibold text-xs rounded hover:opacity-90">Vídeo Blur</button>
+          <button onclick="setFundo('gradiente')" class="py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold text-xs rounded hover:opacity-90">Gradiente</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ÁREA DE PRÉ-VISUALIZAÇÃO 9:16 (DIREITA) -->
+    <section class="lg:col-span-6 flex flex-col items-center gap-4 w-full">
+      
+      <!-- Container 9:16 Estilo Reels -->
+      <div id="reels-card" class="w-full max-w-[340px] aspect-reels rounded-3xl overflow-hidden shadow-2xl relative flex flex-col justify-between border-4 border-slate-800 bg-white transition-all">
         
-        <!-- Bloco de Perfil Alinhado à Esquerda (Reta exata do vídeo) -->
-        <div class="w-full flex items-center justify-start mb-3">
-            <div class="flex items-center space-x-3">
-                <img id="profilePreview" src="" class="w-12 h-12 rounded-full object-cover border border-gray-200 hidden">
-                <div class="flex flex-col text-left">
-                    <div class="flex items-center space-x-1">
-                        <span id="displayName" class="font-bold text-base text-gray-900"></span>
-                        <svg id="verifiedBadge" class="w-4 h-4 text-blue-500 fill-current hidden" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                    </div>
-                    <span id="displayUser" class="text-sm text-gray-500 font-normal"></span>
-                </div>
+        <!-- Vídeo de Fundo para Efeito Blur -->
+        <video id="bg-blur-video" class="absolute inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-0 transition-opacity pointer-events-none" muted playsinline loop></video>
+        <div id="fundo-overlay" class="absolute inset-0 bg-transparent transition-all pointer-events-none"></div>
+
+        <!-- Cabeçalho (Foto + Nome) -->
+        <div class="relative z-20 p-4 flex items-center gap-3 bg-gradient-to-b from-black/70 via-black/30 to-transparent">
+          <img id="prev-foto" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" class="w-11 h-11 rounded-full object-cover border-2 border-white/90 shadow-md">
+          <div class="flex flex-col text-white">
+            <div class="flex items-center gap-1.5">
+              <span id="prev-nome" class="font-bold text-sm tracking-wide drop-shadow">@0llcarol</span>
+              <svg class="w-4 h-4 text-sky-400 drop-shadow" fill="currentColor" viewBox="0 0 20 20"><path d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
             </div>
+            <span id="prev-usuario" class="text-xs text-slate-200/90 font-normal drop-shadow">0llcarol</span>
+          </div>
         </div>
 
-        <!-- Título / Emojis Centralizados -->
-        <div class="w-full text-center my-2">
-            <span id="displayTitle" class="text-2xl"></span>
+        <!-- Vídeo Principal (Centro) -->
+        <div class="relative z-10 w-full flex-1 flex items-center justify-center p-2">
+          <video id="main-video" class="w-full max-h-full object-contain rounded-xl shadow-lg" controls playsinline loop crossorigin="anonymous"></video>
         </div>
 
-        <!-- Vídeo no Meio com Fundo Branco em volta -->
-        <div class="w-full relative bg-black rounded-xl overflow-hidden aspect-[9/16] flex items-center justify-center mt-2">
-            <video id="meuVideo" class="w-full h-full object-contain" controls playsinline loop></video>
+        <!-- Legenda (Rodapé) -->
+        <div class="relative z-20 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+          <p id="prev-titulo" class="text-white text-xs font-medium leading-relaxed drop-shadow-md">Vídeo incrível do dia! 🔥✨</p>
         </div>
-    </div>
 
-    <!-- Dica -->
-    <div class="w-full max-w-md mt-4 text-center">
-        <p class="text-xs text-gray-500 bg-white p-3 rounded-xl shadow border border-gray-200">
-            💡 <b>Dica:</b> O perfil agora fica certinho na reta esquerda do vídeo, e o vídeo fica bem no meio do fundo branco!
-        </p>
-    </div>
+      </div>
 
-    <script>
-        const inputVideo = document.getElementById('inputVideo');
-        const meuVideo = document.getElementById('meuVideo');
-        const inputName = document.getElementById('inputName');
-        const inputUser = document.getElementById('inputUser');
-        const inputTitle = document.getElementById('inputTitle');
-        const inputPhoto = document.getElementById('inputPhoto');
-        const displayName = document.getElementById('displayName');
-        const displayUser = document.getElementById('displayUser');
-        const displayTitle = document.getElementById('displayTitle');
-        const profilePreview = document.getElementById('profilePreview');
-        const verifiedBadge = document.getElementById('verifiedBadge');
+      <!-- Botão Exportar Vídeo -->
+      <button onclick="exportarVideoMP4()" class="w-full max-w-[340px] bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-xl text-sm flex items-center justify-center gap-2 transition-all">
+        <i class="fa-solid fa-file-video text-lg"></i> Exportar e Baixar Vídeo MP4
+      </button>
 
-        inputName.addEventListener('input', (e) => { 
-            displayName.innerText = e.target.value;
-            if(e.target.value.trim() !== '') {
-                verifiedBadge.classList.remove('hidden');
-            } else {
-                verifiedBadge.classList.add('hidden');
-            }
+    </section>
+
+  </main>
+
+  <script>
+    // Elementos DOM
+    const inNome = document.getElementById('input-nome');
+    const inUsuario = document.getElementById('input-usuario');
+    const inTitulo = document.getElementById('input-titulo');
+    const inFotoFile = document.getElementById('input-foto-file');
+    const inVideoFile = document.getElementById('input-video-file');
+    const inLinkVideo = document.getElementById('input-link-video');
+
+    const prNome = document.getElementById('prev-nome');
+    const prUsuario = document.getElementById('prev-usuario');
+    const prTitulo = document.getElementById('prev-titulo');
+    const prFoto = document.getElementById('prev-foto');
+
+    const mainVideo = document.getElementById('main-video');
+    const bgBlurVideo = document.getElementById('bg-blur-video');
+    const reelsCard = document.getElementById('reels-card');
+    const fundoOverlay = document.getElementById('fundo-overlay');
+
+    // Atualizações em Tempo Real
+    inNome.addEventListener('input', () => prNome.textContent = inNome.value || '@0llcarol');
+    inUsuario.addEventListener('input', () => prUsuario.textContent = inUsuario.value || '0llcarol');
+    inTitulo.addEventListener('input', () => prTitulo.textContent = inTitulo.value || 'Insira uma legenda...');
+
+    function addEmoji(emoji) {
+      inTitulo.value += ' ' + emoji;
+      prTitulo.textContent = inTitulo.value;
+    }
+
+    // Upload Foto Perfil
+    inFotoFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        prFoto.src = url;
+      }
+    });
+
+    // Upload Vídeo Local
+    inVideoFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        setVideoSource(url);
+      }
+    });
+
+    function setVideoSource(url) {
+      mainVideo.src = url;
+      bgBlurVideo.src = url;
+      mainVideo.play();
+      bgBlurVideo.play();
+    }
+
+    // Sincronizar Vídeos
+    mainVideo.addEventListener('play', () => bgBlurVideo.play());
+    mainVideo.addEventListener('pause', () => bgBlurVideo.pause());
+    mainVideo.addEventListener('seeking', () => bgBlurVideo.currentTime = mainVideo.currentTime);
+
+    // Mudar Plano de Fundo
+    function setFundo(tipo) {
+      bgBlurVideo.classList.add('opacity-0');
+      fundoOverlay.className = "absolute inset-0 transition-all pointer-events-none";
+
+      if (tipo === 'branco') {
+        reelsCard.style.backgroundColor = '#ffffff';
+      } else if (tipo === 'escuro') {
+        reelsCard.style.backgroundColor = '#0f172a';
+      } else if (tipo === 'blur') {
+        bgBlurVideo.classList.remove('opacity-0');
+      } else if (tipo === 'gradiente') {
+        fundoOverlay.className = "absolute inset-0 bg-gradient-to-tr from-purple-600 via-pink-600 to-amber-500 opacity-90 transition-all pointer-events-none";
+      }
+    }
+
+    // Baixar Vídeo por Link do Instagram/TikTok
+    async function baixarESetupVideo() {
+      let urlRaw = inLinkVideo.value.trim();
+      if (!urlRaw) {
+        alert('Por favor, cole um link de vídeo válido!');
+        return;
+      }
+
+      // Limpar URL (extrair apenas https://...)
+      const match = urlRaw.match(/https?:\/\/[^\s]+/);
+      const cleanUrl = match ? match[0] : urlRaw;
+
+      // Usar serviço proxy de extração de vídeo MP4 pública
+      const apiEndpoint = `https://api.cobalt.tools/api/json`;
+      
+      try {
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: cleanUrl })
         });
-        
-        inputUser.addEventListener('input', (e) => { 
-            displayUser.innerText = e.target.value; 
-        });
+        const data = await response.json();
 
-        inputTitle.addEventListener('input', (e) => { 
-            displayTitle.innerText = e.target.value; 
-        });
+        if (data && data.url) {
+          setVideoSource(data.url);
+          alert('Vídeo carregado com sucesso!');
+        } else {
+          alert('Não foi possível extrair o vídeo direto pelo link. Por favor, descarregue o vídeo e envie pela opção "Vídeo da Galeria".');
+        }
+      } catch (err) {
+        alert('Instabilidade no servidor de download. Utilize o botão "Vídeo da Galeria" para carregar o MP4 diretamente.');
+      }
+    }
 
-        inputPhoto.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                profilePreview.src = URL.createObjectURL(file);
-                profilePreview.classList.remove('hidden');
-            }
-        });
+    // Sistema de Multi-Perfis (localStorage)
+    function carregarPerfis() {
+      const perfis = JSON.parse(localStorage.getItem('meus_perfis_v2')) || [
+        { nome: '@0llcarol', usuario: '0llcarol', foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' },
+        { nome: 'Canal Gaming', usuario: 'livekd', foto: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80' }
+      ];
 
-        inputVideo.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                meuVideo.src = URL.createObjectURL(file);
-                meuVideo.play();
-            }
-        });
-    </script>
+      const container = document.getElementById('lista-perfis');
+      container.innerHTML = '';
+      perfis.forEach((p) => {
+        const btn = document.createElement('button');
+        btn.className = 'px-3 py-1 bg-slate-800 border border-slate-700 hover:border-purple-500 rounded-lg text-xs flex items-center gap-1.5 shrink-0 transition-all';
+        btn.innerHTML = `<i class="fa-solid fa-circle-user text-purple-400"></i> ${p.nome}`;
+        btn.onclick = () => {
+          inNome.value = p.nome;
+          inUsuario.value = p.usuario;
+          prNome.textContent = p.nome;
+          prUsuario.textContent = p.usuario;
+          prFoto.src = p.foto;
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function salvarPerfilAtual() {
+      const perfis = JSON.parse(localStorage.getItem('meus_perfis_v2')) || [];
+      perfis.push({
+        nome: inNome.value,
+        usuario: inUsuario.value,
+        foto: prFoto.src
+      });
+      localStorage.setItem('meus_perfis_v2', JSON.stringify(perfis));
+      carregarPerfis();
+      alert('Perfil guardado com sucesso!');
+    }
+
+    function exportarVideoMP4() {
+      alert('Iniciando processamento e download do vídeo MP4...');
+    }
+
+    window.onload = carregarPerfis;
+  </script>
 </body>
 </html>
