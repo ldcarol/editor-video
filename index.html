@@ -1,162 +1,93 @@
 
+
+    
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor & Gerador de Vídeos Reels/TikTok</title>
+  <title>Editor de Vídeos Reels</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    .aspect-reels { aspect-ratio: 9/16; }
-  </style>
+  <style>.aspect-reels { aspect-ratio: 9/16; }</style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-3 md:p-6 flex flex-col items-center">
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 flex flex-col items-center">
 
-  <header class="w-full max-w-5xl mb-6 text-center">
-    <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
-      Editor de Vídeos por Link
-    </h1>
-    <p class="text-xs text-slate-400 mt-1">Cole o link do Instagram Reels ou TikTok para criar o seu vídeo personalizado.</p>
-  </header>
+  <h1 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Editor de Vídeos por Link</h1>
 
-  <main class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-    
-    <!-- PAINEL DE CONTROLE (ESQUERDA) -->
-    <section class="lg:col-span-6 bg-slate-800 border border-slate-700/80 rounded-2xl p-4 md:p-5 shadow-2xl flex flex-col gap-5">
-      
-      <!-- 1. Gestão de Perfis -->
-      <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
-        <div class="flex justify-between items-center mb-2.5">
-          <span class="text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
-            <i class="fa-solid fa-users"></i> Minhas Páginas / Perfis
-          </span>
-          <button onclick="salvarPerfilAtual()" class="text-xs bg-purple-600 hover:bg-purple-500 text-white font-semibold px-3 py-1 rounded-lg transition-all shadow">
-            + Salvar Perfil
-          </button>
-        </div>
-        <div id="lista-perfis" class="flex gap-2 overflow-x-auto pb-1">
-          <!-- Perfis JS -->
-        </div>
+  <div class="w-full max-w-md bg-slate-800 p-4 rounded-2xl shadow-xl flex flex-col gap-4 border border-slate-700">
+    <div>
+      <label class="text-xs text-slate-400 mb-1 block">Nome da Página / Utilizador:</label>
+      <input type="text" id="input-nome" value="@0llcarol" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+    </div>
+
+    <div>
+      <label class="text-xs text-slate-400 mb-1 block">Legenda:</label>
+      <input type="text" id="input-titulo" value="Curtindo muito! ✨" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+    </div>
+
+    <div>
+      <label class="text-xs text-indigo-400 font-bold mb-1 block">🔗 Link do Vídeo (Instagram / TikTok):</label>
+      <div class="flex gap-2">
+        <input type="text" id="input-link-video" placeholder="Cole o link aqui..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+        <button onclick="carregarVideo()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap">Baixar</button>
       </div>
+      <span id="status-msg" class="text-[11px] text-slate-400 mt-1 block"></span>
+    </div>
+  </div>
 
-      <!-- 2. Dados do Perfil Atual -->
-      <div class="flex flex-col gap-3">
-        <span class="text-xs font-bold uppercase tracking-wider text-pink-400 flex items-center gap-1.5">
-          <i class="fa-solid fa-user-pen"></i> Dados do Perfil
-        </span>
-        
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="text-xs text-slate-400 mb-1 block">Nome da Página:</label>
-            <input type="text" id="input-nome" value="@0llcarol" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-purple-500">
-          </div>
-          <div>
-            <label class="text-xs text-slate-400 mb-1 block">Utilizador (@):</label>
-            <input type="text" id="input-usuario" value="0llcarol" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-purple-500">
-          </div>
-        </div>
+  <!-- PREVIEW 9:16 -->
+  <div class="w-full max-w-[320px] aspect-reels bg-black rounded-3xl overflow-hidden shadow-2xl relative flex flex-col justify-between mt-6 border-4 border-slate-700">
+    <div class="p-3 bg-gradient-to-b from-black/80 to-transparent z-10 flex items-center gap-2">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-9 h-9 rounded-full object-cover border border-white">
+      <span id="prev-nome" class="text-white font-bold text-xs">@0llcarol</span>
+    </div>
 
-        <div>
-          <label class="text-xs text-slate-400 mb-1 block">Foto de Perfil (Carregar Ficheiro):</label>
-          <input type="file" id="input-foto-file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-950 file:text-purple-300 hover:file:bg-purple-900 cursor-pointer">
-        </div>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <video id="main-video" class="w-full h-full object-contain" controls playsinline loop></video>
+    </div>
 
-        <div>
-          <label class="text-xs text-slate-400 mb-1 block">Legenda / Título:</label>
-          <input type="text" id="input-titulo" value="Vídeo incrível do dia! 🔥✨" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-purple-500">
-          
-          <!-- Emojis Rápido -->
-          <div class="flex gap-1.5 mt-2 overflow-x-auto">
-            <button onclick="addEmoji('🔥')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">🔥</button>
-            <button onclick="addEmoji('✨')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">✨</button>
-            <button onclick="addEmoji('🤣')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">🤣</button>
-            <button onclick="addEmoji('❤️')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">❤️</button>
-            <button onclick="addEmoji('👀')" class="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs hover:bg-slate-700">👀</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. Entrada EXCLUSIVA por Link -->
-      <div class="flex flex-col gap-3 pt-3 border-t border-slate-700/60">
-        <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
-          <i class="fa-solid fa-link"></i> Link do Vídeo (Instagram / TikTok)
-        </span>
-
-        <div class="flex flex-col gap-1.5">
-          <label class="text-xs text-slate-400">Cole o Link do Reels:</label>
-          <div class="flex gap-2">
-            <input type="text" id="input-link-video" placeholder="https://www.instagram.com/reel/..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-            <button id="btn-baixar" onclick="baixarESetupVideo()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-4 py-2 rounded-lg whitespace-nowrap transition-all flex items-center gap-1">
-              <i class="fa-solid fa-cloud-arrow-down"></i> Baixar e Carregar
-            </button>
-          </div>
-          <span id="status-download" class="text-[11px] text-slate-400 mt-1 hidden">Procurando vídeo...</span>
-        </div>
-      </div>
-
-      <!-- 4. Estilo do Plano de Fundo -->
-      <div class="flex flex-col gap-2 pt-3 border-t border-slate-700/60">
-        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-          <i class="fa-solid fa-palette"></i> Plano de Fundo
-        </span>
-        <div class="grid grid-cols-4 gap-2">
-          <button onclick="setFundo('branco')" class="py-1.5 bg-white text-slate-900 font-semibold text-xs rounded border hover:opacity-90">Branco</button>
-          <button onclick="setFundo('escuro')" class="py-1.5 bg-slate-950 text-white font-semibold text-xs rounded border border-slate-700 hover:opacity-90">Escuro</button>
-          <button onclick="setFundo('blur')" class="py-1.5 bg-gradient-to-r from-purple-900 to-pink-900 text-white font-semibold text-xs rounded hover:opacity-90">Vídeo Blur</button>
-          <button onclick="setFundo('gradiente')" class="py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold text-xs rounded hover:opacity-90">Gradiente</button>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- ÁREA DE PRÉ-VISUALIZAÇÃO 9:16 (DIREITA) -->
-    <section class="lg:col-span-6 flex flex-col items-center gap-4 w-full">
-      
-      <div id="reels-card" class="w-full max-w-[340px] aspect-reels rounded-3xl overflow-hidden shadow-2xl relative flex flex-col justify-between border-4 border-slate-800 bg-white transition-all">
-        
-        <!-- Vídeo Blur de Fundo -->
-        <video id="bg-blur-video" class="absolute inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-0 transition-opacity pointer-events-none" muted playsinline loop></video>
-        <div id="fundo-overlay" class="absolute inset-0 bg-transparent transition-all pointer-events-none"></div>
-
-        <!-- Cabeçalho Perfil -->
-        <div class="relative z-20 p-4 flex items-center gap-3 bg-gradient-to-b from-black/70 via-black/30 to-transparent">
-          <img id="prev-foto" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" class="w-11 h-11 rounded-full object-cover border-2 border-white/90 shadow-md">
-          <div class="flex flex-col text-white">
-            <div class="flex items-center gap-1.5">
-              <span id="prev-nome" class="font-bold text-sm tracking-wide drop-shadow">@0llcarol</span>
-              <svg class="w-4 h-4 text-sky-400 drop-shadow" fill="currentColor" viewBox="0 0 20 20"><path d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-            </div>
-            <span id="prev-usuario" class="text-xs text-slate-200/90 font-normal drop-shadow">0llcarol</span>
-          </div>
-        </div>
-
-        <!-- Vídeo Principal -->
-        <div class="relative z-10 w-full flex-1 flex items-center justify-center p-2">
-          <video id="main-video" class="w-full max-h-full object-contain rounded-xl shadow-lg" controls playsinline loop crossorigin="anonymous"></video>
-        </div>
-
-        <!-- Legenda -->
-        <div class="relative z-20 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-          <p id="prev-titulo" class="text-white text-xs font-medium leading-relaxed drop-shadow-md">Vídeo incrível do dia! 🔥✨</p>
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
+    <div class="p-3 bg-gradient-to-t from-black/80 to-transparent z-10">
+      <p id="prev-titulo" class="text-white text-xs">Curtindo muito! ✨</p>
+    </div>
+  </div>
 
   <script>
     const inNome = document.getElementById('input-nome');
-    const inUsuario = document.getElementById('input-usuario');
     const inTitulo = document.getElementById('input-titulo');
-    const inFotoFile = document.getElementById('input-foto-file');
-    const inLinkVideo = document.getElementById('input-link-video');
+    const inLink = document.getElementById('input-link-video');
+    const prevNome = document.getElementById('prev-nome');
+    const prevTitulo = document.getElementById('prev-titulo');
+    const mainVideo = document.getElementById('main-video');
+    const statusMsg = document.getElementById('status-msg');
 
-    const prNome = document.getElementById('prev-nome');
-    const prUsuario = document.getElementById('prev-usuario');
-    const prTitulo = document.getElementById('prev-titulo');
-    const prFoto = document.getElementById('prev-foto');
+    inNome.addEventListener('input', () => prevNome.textContent = inNome.value);
+    inTitulo.addEventListener('input', () => prevTitulo.textContent = inTitulo.value);
 
-    
+    async function carregarVideo() {
+      let url = inLink.value.trim();
+      if (!url) { alert('Cole um link!'); return; }
+
+      statusMsg.textContent = "⏳ A processar o vídeo...";
+      
+      try {
+        const res = await fetch('https://api.cobalt.tools/api/json', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: url })
+        });
+        const data = await res.json();
+        if (data && data.url) {
+          mainVideo.src = data.url;
+          mainVideo.play();
+          statusMsg.textContent = "✅ Vídeo carregado com sucesso!";
+        } else {
+          statusMsg.textContent = "❌ Erro ao extrair.";
+        }
+      } catch (err) {
+        statusMsg.textContent = "❌ Falha na ligação.";
+      }
+    }
+  </script>
+</body>
+</html>
