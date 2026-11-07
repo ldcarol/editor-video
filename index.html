@@ -1,93 +1,55 @@
+import asyncio
+import os
+import tempfile
+from pathlib import Path
+
+import discord
+import imageio_ffmpeg
+from discord import app_commands
+from dotenv import load_dotenv
+from PIL import Image, ImageDraw, ImageFont
+
+load_dotenv()
+TOKEN = os.getenv("DISCORD_TOKEN")
+
+# ---- Configure aqui o topo da sua página ----
+NOME = "Minha página"
+ARROBA = "@minhapagina"
+FRASE = "😂😂"
+FOTO = "perfil.png"                 # sua foto, na mesma pasta do bot.py
+FONTE = "fonte.ttf"                 # opcional: fonte em negrito
+FONTE_EMOJI = "NotoColorEmoji.ttf"  # opcional: para a frase aparecer com emoji
+# ---------------------------------------------
+
+W, H_TOPO, H_VIDEO = 1080, 300, 1620
+H_TOTAL = H_TOPO + H_VIDEO
+FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 
 
-    
-<!DOCTYPE html>
-<html lang="pt-PT">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor de Vídeos Reels</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>.aspect-reels { aspect-ratio: 9/16; }</style>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 flex flex-col items-center">
+def fonte(caminho, tamanho):
+    if Path(caminho).exists():
+        return ImageFont.truetype(caminho, tamanho)
+    return ImageFont.load_default(size=tamanho)
 
-  <h1 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Editor de Vídeos por Link</h1>
 
-  <div class="w-full max-w-md bg-slate-800 p-4 rounded-2xl shadow-xl flex flex-col gap-4 border border-slate-700">
-    <div>
-      <label class="text-xs text-slate-400 mb-1 block">Nome da Página / Utilizador:</label>
-      <input type="text" id="input-nome" value="@0llcarol" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
-    </div>
+def desenhar_frase(img, frase, x, y):
+    if Path(FONTE_EMOJI).exists():
+        f = ImageFont.truetype(FONTE_EMOJI, 109)
+        tmp = Image.new("RGBA", (130 * max(len(frase), 1), 160), (255, 255, 255, 0))
+        ImageDraw.Draw(tmp).text((0, 0), frase, font=f, embedded_color=True)
+        tmp = tmp.crop(tmp.getbbox() or (0, 0, 1, 1))
+        tmp.thumbnail((420, 70))
+        img.paste(tmp, (x, y), tmp)
+    else:
+        ImageDraw.Draw(img).text((x, y), frase, font=fonte(FONTE, 56), fill="black")
 
-    <div>
-      <label class="text-xs text-slate-400 mb-1 block">Legenda:</label>
-      <input type="text" id="input-titulo" value="Curtindo muito! ✨" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
-    </div>
 
-    <div>
-      <label class="text-xs text-indigo-400 font-bold mb-1 block">🔗 Link do Vídeo (Instagram / TikTok):</label>
-      <div class="flex gap-2">
-        <input type="text" id="input-link-video" placeholder="Cole o link aqui..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
-        <button onclick="carregarVideo()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap">Baixar</button>
-      </div>
-      <span id="status-msg" class="text-[11px] text-slate-400 mt-1 block"></span>
-    </div>
-  </div>
-
-  <!-- PREVIEW 9:16 -->
-  <div class="w-full max-w-[320px] aspect-reels bg-black rounded-3xl overflow-hidden shadow-2xl relative flex flex-col justify-between mt-6 border-4 border-slate-700">
-    <div class="p-3 bg-gradient-to-b from-black/80 to-transparent z-10 flex items-center gap-2">
-      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-9 h-9 rounded-full object-cover border border-white">
-      <span id="prev-nome" class="text-white font-bold text-xs">@0llcarol</span>
-    </div>
-
-    <div class="absolute inset-0 flex items-center justify-center">
-      <video id="main-video" class="w-full h-full object-contain" controls playsinline loop></video>
-    </div>
-
-    <div class="p-3 bg-gradient-to-t from-black/80 to-transparent z-10">
-      <p id="prev-titulo" class="text-white text-xs">Curtindo muito! ✨</p>
-    </div>
-  </div>
-
-  <script>
-    const inNome = document.getElementById('input-nome');
-    const inTitulo = document.getElementById('input-titulo');
-    const inLink = document.getElementById('input-link-video');
-    const prevNome = document.getElementById('prev-nome');
-    const prevTitulo = document.getElementById('prev-titulo');
-    const mainVideo = document.getElementById('main-video');
-    const statusMsg = document.getElementById('status-msg');
-
-    inNome.addEventListener('input', () => prevNome.textContent = inNome.value);
-    inTitulo.addEventListener('input', () => prevTitulo.textContent = inTitulo.value);
-
-    async function carregarVideo() {
-      let url = inLink.value.trim();
-      if (!url) { alert('Cole um link!'); return; }
-
-      statusMsg.textContent = "⏳ A processar o vídeo...";
-      
-      try {
-        const res = await fetch('https://api.cobalt.tools/api/json', {
-          method: 'POST',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: url })
-        });
-        const data = await res.json();
-        if (data && data.url) {
-          mainVideo.src = data.url;
-          mainVideo.play();
-          statusMsg.textContent = "✅ Vídeo carregado com sucesso!";
-        } else {
-          statusMsg.textContent = "❌ Erro ao extrair.";
-        }
-      } catch (err) {
-        statusMsg.textContent = "❌ Falha na ligação.";
-      }
-    }
-  </script>
-</body>
-</html>
+def criar_topo(nome, arroba, frase, destino):
+    img = Image.new("RGB", (W, H_TOPO), "white")
+    d = ImageDraw.Draw(img)
+    foto = Image.open(FOTO).convert("RGB").resize((150, 150))
+    mascara = Image.new("L", (150, 150), 0)
+    ImageDraw.Draw(mascara).ellipse((0, 0, 150, 150), fill=255)
+    img.paste(foto, (60, 25), mascara)
+    d.text((240, 40), nome, font=fonte(FONTE, 64), fill="black")
+    d.text((240, 120), arroba, font=fonte(FONTE, 40), fill=(110, 110,
